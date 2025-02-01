@@ -3,6 +3,7 @@ from PIL import Image
 from tiles import TileType, create_tile
 
 def generate_sine_wave(width, height, tile_size):
+    """Generate a pattern based on sine waves"""
     img = Image.new('RGB', (width, height))
     tile_types = list(TileType)
     for y in range(0, height, tile_size):

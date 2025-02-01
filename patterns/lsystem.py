@@ -1,6 +1,7 @@
 import numpy as np
 
 def generate_lsystem(width, height, iterations=5):
+    """Generate a L-system pattern"""
     pattern = np.zeros((height, width))
     rules = {'F': 'F[+F]F[-F]F'}
     current = 'F'

@@ -1,6 +1,7 @@
 import numpy as np
 
 def generate_dragon_curve(width, height, iterations=12):
+    """Generate a dragon curve pattern"""
     pattern = np.zeros((height, width))
     
     def dragon_points(n):

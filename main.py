@@ -7,6 +7,7 @@ import itertools
 import threading
 
 def create_spinner(start_time) -> Tuple[Callable, Callable]:
+    """Create a spinner to show progress in terminal"""
     state = {'running': False, 'start_time': start_time}
     spinner = itertools.cycle(['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'])
     
@@ -37,7 +38,7 @@ def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType]]:
     try:
         width = int(args[1])
         height = int(args[2])
-        pattern_type = AlgorithmType(args[3]) if len(args) > 3 else AlgorithmType.FIBONACCI
+        pattern_type = AlgorithmType(args[3]) if len(args) > 3 else AlgorithmType.SINEWAVE
         return width, height, pattern_type
     except ValueError:
         return None
@@ -47,12 +48,14 @@ def main() -> None:
     
     if result is None:
         print("Usage: python main.py <width> <height> [pattern_type]")
+
         print("Available patterns:", [t.value for t in AlgorithmType])
         return
         
     width, height, pattern_type = result
     
     try:
+        print(f"Generating {width}x{height} using {pattern_type.value} algorithm")
         start_time = time.time()
         start_spinner, stop_spinner = create_spinner(start_time)
         start_spinner()

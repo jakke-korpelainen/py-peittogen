@@ -1,6 +1,7 @@
 import numpy as np
 
 def generate_fibonacci_spiral(width, height, scale=None):
+    """Generate a Fibonacci spiral pattern"""
     pattern = np.zeros((height, width))
     phi = (1 + np.sqrt(5)) / 2
     
