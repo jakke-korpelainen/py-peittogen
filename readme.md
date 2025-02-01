@@ -37,3 +37,6 @@ py .\main.py 720 1080 blanket 12 18
 In the image is the original hand made draft of a blanket.
 
 Now, with the blanket algorithm, you could generate similar patterns as in the image using the tile system, which can then be used to visualize a blanket for crochet.
+
+![Generated Blanket](example3.png)
+This was generated using the algorithm without giving too much thought on the patterns, but it's a good start.
