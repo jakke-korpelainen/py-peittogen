@@ -13,12 +13,13 @@ class RowPattern:
 
 # Pre-made blanket patterns for asthetically pleasing blankets
 blanket_patterns = [
-    # blanket # 1
+    # blanket example
     [
         RowPattern([TileType.A, TileType.B], use_related=True, rows=2),  # 2 rows of related diagonal patterns
         RowPattern([TileType.C, TileType.D, TileType.E], rows=1),  # 1 row of triple pattern
         RowPattern([TileType.E]), # 1 row of solid pattern
     ]
+    # TODO: this is a stub, should add more blankets here
 ]
 
 def get_related_pattern(prev_pattern: RowPattern) -> RowPattern:
