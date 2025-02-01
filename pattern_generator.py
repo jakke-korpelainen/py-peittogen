@@ -7,13 +7,13 @@ import uuid
 import random
 import numpy as np
 from tiles import draw_tile_color, AlgorithmType, draw_tile_texture
-from patterns.sine_wave import generate_sine_wave
-from patterns.fibonacci_spiral import generate_fibonacci_spiral
-from patterns.dragon_curve import generate_dragon_curve
-from patterns.sierpinski import generate_sierpinski
-from patterns.voronoi import generate_voronoi
-from patterns.lsystem import generate_lsystem
-from patterns.blanket import generate_blanket
+from algorithms.sine_wave import generate_sine_wave
+from algorithms.fibonacci_spiral import generate_fibonacci_spiral
+from algorithms.dragon_curve import generate_dragon_curve
+from algorithms.sierpinski import generate_sierpinski
+from algorithms.voronoi import generate_voronoi
+from algorithms.lsystem import generate_lsystem
+from algorithms.blanket import generate_blanket
 
 BIRD_NAMES = [
     'sparrow', 'robin', 'cardinal', 'bluejay', 'finch', 
