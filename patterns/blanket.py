@@ -21,18 +21,18 @@ blanket_patterns = [
     # TODO: this is a stub, should add more blankets here
 ]
 
-def get_related_pattern(prev_pattern: RowPattern) -> RowPattern:
+def _get_related_pattern(prev_pattern: RowPattern) -> RowPattern:
     """Generate a related pattern based on the previous row"""
     # Simple relation: use complementary colors from available tiles
     all_tiles = list(TileType)
     unused_tiles = [t for t in all_tiles if t not in prev_pattern.tiles]
     return RowPattern(unused_tiles[:len(prev_pattern.tiles)], prev_pattern.repeat)
 
-def generate_row(pattern: RowPattern, segments_x: int) -> List[TileType]:
+def _generate_row(pattern: RowPattern, segments_x: int) -> List[TileType]:
     """Generate a single row of the blanket pattern"""
     return [pattern.tiles[x % len(pattern.tiles)] for x in range(segments_x)]
 
-def get_next_pattern_state(
+def _get_next_pattern_state(
     current_pattern: RowPattern,
     patterns: List[RowPattern],
     pattern_index: int,
@@ -48,7 +48,7 @@ def get_next_pattern_state(
         new_pattern_index = (pattern_index + 1) % len(patterns)
         next_pattern = patterns[new_pattern_index]
     elif current_pattern.use_related:
-        next_pattern = get_related_pattern(current_pattern)
+        next_pattern = _get_related_pattern(current_pattern)
         next_pattern.use_related = True
         next_pattern.rows = patterns[pattern_index].rows - new_rows_in_current
 
@@ -61,7 +61,7 @@ def generate_blanket(segments_x: int = 3, segments_y: int = 4) -> np.ndarray:
     patterns = random.choice(blanket_patterns)
     pattern = np.empty((segments_y, segments_x), dtype=object)
     
-    def generate_all_rows(
+    def _generate_all_rows(
         current_pattern: RowPattern,
         pattern_index: int,
         rows_in_current: int,
@@ -70,13 +70,13 @@ def generate_blanket(segments_x: int = 3, segments_y: int = 4) -> np.ndarray:
         if row >= segments_y:
             return
             
-        pattern[row] = generate_row(current_pattern, segments_x)
+        pattern[row] = _generate_row(current_pattern, segments_x)
         
-        next_pattern, next_index, next_rows = get_next_pattern_state(
+        next_pattern, next_index, next_rows = _get_next_pattern_state(
             current_pattern, patterns, pattern_index, rows_in_current
         )
         
-        generate_all_rows(next_pattern, next_index, next_rows, row + 1)
+        _generate_all_rows(next_pattern, next_index, next_rows, row + 1)
     
-    generate_all_rows(patterns[0], 0, 0, 0)
+    _generate_all_rows(patterns[0], 0, 0, 0)
     return pattern

@@ -4,7 +4,7 @@ def generate_dragon_curve(width, height, iterations=12):
     """Generate a dragon curve pattern"""
     pattern = np.zeros((height, width))
     
-    def dragon_points(n):
+    def _dragon_points(n):
         turns = [1]
         for i in range(n):
             turns = turns + [1] + [-x for x in turns][::-1]
@@ -15,7 +15,7 @@ def generate_dragon_curve(width, height, iterations=12):
     dx, dy = step_size, 0
     points = [(x, y)]
     
-    for turn in dragon_points(iterations):
+    for turn in _dragon_points(iterations):
         if turn == 1:
             dx, dy = -dy, dx
         else:
