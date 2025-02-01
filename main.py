@@ -6,8 +6,8 @@ import time
 import itertools
 import threading
 
-def create_spinner() -> Tuple[Callable, Callable]:
-    state = {'running': False, 'start_time': 0}
+def create_spinner(start_time) -> Tuple[Callable, Callable]:
+    state = {'running': False, 'start_time': start_time}
     spinner = itertools.cycle(['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'])
     
     def spin():
@@ -19,15 +19,15 @@ def create_spinner() -> Tuple[Callable, Callable]:
             sys.stdout.flush()
             time.sleep(0.1)
     
-    def start():
+    def start_spinner():
         state['running'] = True
         state['start_time'] = time.time()
         threading.Thread(target=spin).start()
         
-    def stop():
+    def stop_spinner():
         state['running'] = False
         
-    return start, stop
+    return start_spinner, stop_spinner
 
 def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType]]:
     """Pure function to parse command line arguments"""
@@ -53,10 +53,9 @@ def main() -> None:
     width, height, pattern_type = result
     
     try:
-        start_spinner, stop_spinner = create_spinner()
-        start_spinner()
         start_time = time.time()
-        
+        start_spinner, stop_spinner = create_spinner(start_time)
+        start_spinner()
         _, filename = generate_pattern(width, height, pattern_type)
         
         stop_spinner()
