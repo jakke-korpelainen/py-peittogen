@@ -1,4 +1,4 @@
-__all__ = ['draw_tile_color', 'TileType', 'AlgorithmType']
+__all__ = ['draw_tile_color', 'TileType']
 
 from enum import Enum
 import sys
@@ -11,15 +11,6 @@ class TileType(Enum):
     C = "tile_c"
     D = "tile_d"
     E = "tile_e"
-
-class AlgorithmType(Enum):
-    FIBONACCI = "fibonacci"
-    DRAGON = "dragon"
-    SIERPINSKI = "sierpinski"
-    VORONOI = "voronoi"
-    LSYSTEM = "lsystem"
-    SINEWAVE = "sinewave"
-    BLANKET = "blanket"
 
 DEFAULT_TILE_SIZE = 32
 
