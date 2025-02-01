@@ -3,34 +3,40 @@ import numpy as np
 from typing import List
 from tiles import TileType
 
+tile_base = [TileType.A, TileType.B]
+tile_flowers = [TileType.C, TileType.D, TileType.E, TileType.F]
+tile_flowers_counter = {tile: 0 for tile in tile_flowers}
+
+def _get_least_used_flowers() -> List[TileType]:
+    """Get flower tiles that have been used the least"""
+    min_usage = min(tile_flowers_counter.values())
+    return [tile for tile, count in tile_flowers_counter.items() if count == min_usage]
+
+def _choose_flower() -> TileType:
+    """Choose a flower tile with preference for less used ones"""
+    candidates = _get_least_used_flowers()
+    chosen = random.choice(candidates)
+    tile_flowers_counter[chosen] += 1
+    return chosen
+
 class QuiltRow:
-    def __init__(self, tiles: List[TileType], repeat: bool = True, use_related: bool = False, rows: int = 1):
+    def __init__(self, tiles: List[TileType], repeat: bool = True, rows: int = 1):
         self.tiles = tiles
         self.repeat = repeat
-        self.use_related = use_related  # Whether to use related patterns for subsequent rows
-        self.rows = rows  # How many rows this pattern group should span
+        self.rows = rows
 
-# Pre-made blanket patterns for asthetically pleasing blankets
-blanket_quilts = [
-    # blanket example
-    [
-        QuiltRow([TileType.A, TileType.B], use_related=True, rows=2),  # 2 rows of related diagonal patterns
-        QuiltRow([TileType.C, TileType.D, TileType.E], rows=1),  # 1 row of triple pattern
-        QuiltRow([TileType.E]), # 1 row of solid pattern
-    ]
-    # TODO: this is a stub, should add more blankets here
+quilt_template = [
+    QuiltRow([TileType.A, _choose_flower], rows=1),
+    QuiltRow([_choose_flower, TileType.B], rows=1),
 ]
 
-def _get_related_quilt_row(prev_row: QuiltRow) -> QuiltRow:
-    """Generate a related quilt row based on the previous row"""
-    # Simple relation: use complementary colors from available tiles
-    all_tiles = list(TileType)
-    unused_tiles = [t for t in all_tiles if t not in prev_row.tiles]
-    return QuiltRow(unused_tiles[:len(prev_row.tiles)], prev_row.repeat)
+def _resolve_tile(tile) -> TileType:
+    """Resolve tile value from callable or direct TileType"""
+    return tile() if callable(tile) else tile
 
 def _generate_quilt_row(pattern: QuiltRow, segments_x: int) -> List[TileType]:
     """Generate a single row of the blanket quilt"""
-    return [pattern.tiles[x % len(pattern.tiles)] for x in range(segments_x)]
+    return [_resolve_tile(pattern.tiles[x % len(pattern.tiles)]) for x in range(segments_x)]
 
 def _get_next_pattern_state(
     current_pattern: QuiltRow,
@@ -47,10 +53,6 @@ def _get_next_pattern_state(
         new_rows_in_current = 0
         new_pattern_index = (pattern_index + 1) % len(patterns)
         next_pattern = patterns[new_pattern_index]
-    elif current_pattern.use_related:
-        next_pattern = _get_related_quilt_row(current_pattern)
-        next_pattern.use_related = True
-        next_pattern.rows = patterns[pattern_index].rows - new_rows_in_current
 
     return next_pattern, new_pattern_index, new_rows_in_current
 
@@ -58,7 +60,7 @@ def generate_blanket(segments_x: int = 3, segments_y: int = 4) -> np.ndarray:
     """
     Generate a blanket pattern divided into segments
     """
-    patterns = random.choice(blanket_quilts)
+    
     pattern = np.empty((segments_y, segments_x), dtype=object)
     
     def _generate_all_rows(
@@ -73,10 +75,11 @@ def generate_blanket(segments_x: int = 3, segments_y: int = 4) -> np.ndarray:
         pattern[row] = _generate_quilt_row(current_pattern, segments_x)
         
         next_pattern, next_index, next_rows = _get_next_pattern_state(
-            current_pattern, patterns, pattern_index, rows_in_current
+            current_pattern, quilt_template, pattern_index, rows_in_current
         )
         
         _generate_all_rows(next_pattern, next_index, next_rows, row + 1)
     
-    _generate_all_rows(patterns[0], 0, 0, 0)
+    _generate_all_rows(quilt_template[0], 0, 0, 0)
+
     return pattern
