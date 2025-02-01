@@ -1,6 +1,6 @@
 import math
 from PIL import Image
-from tiles import TileType, create_tile
+from tiles import TileType, draw_tile_color
 
 def generate_sine_wave(width, height, tile_size):
     """Generate a pattern based on sine waves"""
@@ -17,7 +17,7 @@ def generate_sine_wave(width, height, tile_size):
             tile_index = int(combined * len(tile_types)) % len(tile_types)
             
             # Create and paste the tile
-            tile = create_tile(tile_types[tile_index])
+            tile = draw_tile_color(tile_types[tile_index])
             img.paste(tile, (x, y))
 
     return img

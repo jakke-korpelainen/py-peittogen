@@ -1,4 +1,4 @@
-__all__ = ['create_tile', 'TileType', 'AlgorithmType']
+__all__ = ['draw_tile_color', 'TileType', 'AlgorithmType']
 
 from enum import Enum
 from PIL import Image
@@ -10,7 +10,6 @@ class TileType(Enum):
     C = "tile_c"
     D = "tile_d"
     E = "tile_e"
-    F = "tile_f"
 
 class AlgorithmType(Enum):
     FIBONACCI = "fibonacci"
@@ -19,6 +18,7 @@ class AlgorithmType(Enum):
     VORONOI = "voronoi"
     LSYSTEM = "lsystem"
     SINEWAVE = "sinewave"
+    BLANKET = "blanket"
 
 DEFAULT_TILE_SIZE = 32
 
@@ -29,11 +29,26 @@ TILE_COLORS: dict[TileType, Tuple[int, int, int]] = {
     TileType.C: (0, 0, 255),     # Blue
     TileType.D: (255, 255, 0),   # Yellow
     TileType.E: (255, 0, 255),   # Magenta
-    TileType.F: (0, 255, 255),   # Cyan
 }
 
-def create_tile(tile_type: TileType, tile_size: int = DEFAULT_TILE_SIZE) -> Image.Image:
-    """Pure function to create a tile"""
+def _get_tile_texture_path(tile_type: TileType) -> str:
+    """Get path to texture for tile type"""
+    return f"tiles/{tile_type.value}.png"
+
+def draw_tile_color(tile_type: TileType, tile_size: int = DEFAULT_TILE_SIZE) -> Image.Image:
+    """Create a tile image based on type and size"""
     if tile_size <= 0:
         raise ValueError("Tile size must be positive")
     return Image.new('RGB', (tile_size, tile_size), TILE_COLORS[tile_type])
+
+def draw_tile_texture(tile_type: TileType, tile_size: int = DEFAULT_TILE_SIZE) -> Image.Image:
+    """Create a tile image based on type and size using texture"""
+    if tile_size <= 0:
+        raise ValueError("Tile size must be positive")
+    
+    print(f"Drawing texture {_get_tile_texture_path(tile_type)} of size {tile_size}")
+
+    # Load texture image
+    texture = Image.open(_get_tile_texture_path(tile_type))
+    texture = texture.resize((tile_size, tile_size))
+    return texture

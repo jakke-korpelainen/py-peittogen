@@ -5,6 +5,7 @@ import sys
 import time
 import itertools
 import threading
+import os
 
 def create_spinner(start_time) -> Tuple[Callable, Callable]:
     """Create a spinner to show progress in terminal"""
@@ -30,7 +31,7 @@ def create_spinner(start_time) -> Tuple[Callable, Callable]:
         
     return start_spinner, stop_spinner
 
-def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType]]:
+def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType, dict]]:
     """Pure function to parse command line arguments"""
     if len(args) < 3:
         return None
@@ -39,31 +40,40 @@ def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType]]:
         width = int(args[1])
         height = int(args[2])
         pattern_type = AlgorithmType(args[3]) if len(args) > 3 else AlgorithmType.SINEWAVE
-        return width, height, pattern_type
+        
+        kwargs = {}
+        if pattern_type == AlgorithmType.BLANKET:
+            kwargs['segments_x'] = int(args[4])
+            kwargs['segments_y'] = int(args[5])
+        
+        return width, height, pattern_type, kwargs
     except ValueError:
         return None
 
 def main() -> None:
     result = parse_arguments(sys.argv)
+            
+    print(f"Arguments: {result}")
     
     if result is None:
         print("Usage: python main.py <width> <height> [pattern_type]")
-
+        print("For blanket pattern: python main.py <width> <height> blanket <segments_x> <segments_y>")
         print("Available patterns:", [t.value for t in AlgorithmType])
         return
         
-    width, height, pattern_type = result
+    width, height, pattern_type, kwargs = result
     
     try:
-        print(f"Generating {width}x{height} using {pattern_type.value} algorithm")
         start_time = time.time()
         start_spinner, stop_spinner = create_spinner(start_time)
         start_spinner()
-        _, filename = generate_pattern(width, height, pattern_type)
+        _, filename = generate_pattern(width, height, pattern_type, **kwargs)
         
         stop_spinner()
         elapsed_time = time.time() - start_time
         print(f"\rImage generated: {filename} (took {elapsed_time:.2f} seconds)")
+
+        os.startfile(filename)
     except Exception as e:
         stop_spinner()
         print(f"\rError generating patterns: {str(e)}")
