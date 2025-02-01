@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Optional, Tuple, Callable
 from tiles import AlgorithmType
 from pattern_generator import generate_pattern
