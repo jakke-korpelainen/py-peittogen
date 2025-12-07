@@ -1,5 +1,7 @@
 # py-peittogen
 
+![Sinewave High Resolution](example.png)
+
 **For Anni**
 
 Experimenting on using math with python for various art related use,
