@@ -14,7 +14,7 @@ Includes algorithms for:
 - Voronoi diagram (voronoi)
 - L-system (lsystem)
 - Sine wave (sinewave)
-- Blanket pattern (blanket)
+- Textured Quilted Blanket (blanket)
 
 Some pre-generated 2440 x 1440 examples under `examples/` folder.
 
