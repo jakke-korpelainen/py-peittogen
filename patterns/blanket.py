@@ -10,7 +10,6 @@ class RowPattern:
         self.use_related = use_related  # Whether to use related patterns for subsequent rows
         self.rows = rows  # How many rows this pattern group should span
 
-
 # Pre-made blanket patterns for asthetically pleasing blankets
 blanket_patterns = [
     # blanket example
@@ -29,44 +28,55 @@ def get_related_pattern(prev_pattern: RowPattern) -> RowPattern:
     unused_tiles = [t for t in all_tiles if t not in prev_pattern.tiles]
     return RowPattern(unused_tiles[:len(prev_pattern.tiles)], prev_pattern.repeat)
 
+def generate_row(pattern: RowPattern, segments_x: int) -> List[TileType]:
+    """Generate a single row of the blanket pattern"""
+    return [pattern.tiles[x % len(pattern.tiles)] for x in range(segments_x)]
+
+def get_next_pattern_state(
+    current_pattern: RowPattern,
+    patterns: List[RowPattern],
+    pattern_index: int,
+    rows_in_current: int
+) -> tuple[RowPattern, int, int]:
+    """Determine the next pattern state"""
+    new_rows_in_current = rows_in_current + 1
+    new_pattern_index = pattern_index
+    next_pattern = current_pattern
+
+    if new_rows_in_current >= current_pattern.rows:
+        new_rows_in_current = 0
+        new_pattern_index = (pattern_index + 1) % len(patterns)
+        next_pattern = patterns[new_pattern_index]
+    elif current_pattern.use_related:
+        next_pattern = get_related_pattern(current_pattern)
+        next_pattern.use_related = True
+        next_pattern.rows = patterns[pattern_index].rows - new_rows_in_current
+
+    return next_pattern, new_pattern_index, new_rows_in_current
+
 def generate_blanket(segments_x: int = 3, segments_y: int = 4) -> np.ndarray:
     """
     Generate a blanket pattern divided into segments
-    
-    Args:
-        width: Total width in pixels (used only for array creation)
-        height: Total height in pixels (used only for array creation)
-        segments_x: Number of horizontal segments
-        segments_y: Number of vertical segments
-    
-    Returns:
-        numpy array representing the pattern with actual tile information
     """
-    # Create pattern array with segment dimensions
+    patterns = random.choice(blanket_patterns)
     pattern = np.empty((segments_y, segments_x), dtype=object)
     
-    # Define pattern sequence with different behaviors
-    patterns = random.choice(blanket_patterns)
-    
-    current_pattern = patterns[0]
-    pattern_index = 0
-    rows_in_current = 0
-    
-    # Fill pattern array
-    for sy in range(segments_y):
-        for sx in range(segments_x):
-            tile_type = current_pattern.tiles[sx % len(current_pattern.tiles)]
-            pattern[sy, sx] = tile_type
+    def generate_all_rows(
+        current_pattern: RowPattern,
+        pattern_index: int,
+        rows_in_current: int,
+        row: int
+    ):
+        if row >= segments_y:
+            return
+            
+        pattern[row] = generate_row(current_pattern, segments_x)
         
-        # Handle pattern transitions
-        rows_in_current += 1
-        if rows_in_current >= current_pattern.rows:
-            rows_in_current = 0
-            pattern_index = (pattern_index + 1) % len(patterns)
-            current_pattern = patterns[pattern_index]
-        elif current_pattern.use_related:
-            current_pattern = get_related_pattern(current_pattern)
-            current_pattern.use_related = True
-            current_pattern.rows = patterns[pattern_index].rows - rows_in_current
+        next_pattern, next_index, next_rows = get_next_pattern_state(
+            current_pattern, patterns, pattern_index, rows_in_current
+        )
+        
+        generate_all_rows(next_pattern, next_index, next_rows, row + 1)
     
+    generate_all_rows(patterns[0], 0, 0, 0)
     return pattern

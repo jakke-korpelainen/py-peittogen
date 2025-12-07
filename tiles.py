@@ -1,6 +1,7 @@
 __all__ = ['draw_tile_color', 'TileType', 'AlgorithmType']
 
 from enum import Enum
+import sys
 from PIL import Image
 from typing import Tuple
 
@@ -45,8 +46,6 @@ def draw_tile_texture(tile_type: TileType, tile_size: int = DEFAULT_TILE_SIZE) -
     """Create a tile image based on type and size using texture"""
     if tile_size <= 0:
         raise ValueError("Tile size must be positive")
-    
-    print(f"Drawing texture {_get_tile_texture_path(tile_type)} of size {tile_size}")
 
     # Load texture image
     texture = Image.open(_get_tile_texture_path(tile_type))
