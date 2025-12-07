@@ -1,11 +1,12 @@
 import math
+from PIL import Image
+from tiles import TileType, create_tile
 
-from tiles import TileType
-
-def generate_sine_wave(self, img):
+def generate_sine_wave(width, height, tile_size):
+    img = Image.new('RGB', (width, height))
     tile_types = list(TileType)
-    for y in range(0, self.height, self.tile_size):
-        for x in range(0, self.width, self.tile_size):
+    for y in range(0, height, tile_size):
+        for x in range(0, width, tile_size):
             # Create a pattern based on sine waves
             wave1 = math.sin(x / 50) * math.cos(y / 50)
             wave2 = math.sin((x + y) / 100)
@@ -15,5 +16,7 @@ def generate_sine_wave(self, img):
             tile_index = int(combined * len(tile_types)) % len(tile_types)
             
             # Create and paste the tile
-            tile = self.tile_generator.create_tile(tile_types[tile_index])
+            tile = create_tile(tile_types[tile_index])
             img.paste(tile, (x, y))
+
+    return img
