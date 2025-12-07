@@ -21,7 +21,7 @@ BIRD_NAMES = [
     'hawk', 'eagle', 'hummingbird', 'warbler', 'chickadee'
 ]
 
-def generate_filename() -> str:
+def _generate_filename() -> str:
     """Generate a filename"""
     bird = random.choice(BIRD_NAMES)
     return os.path.join('./output', f'{bird}_{uuid.uuid4().hex[:6]}.png')
@@ -47,15 +47,15 @@ def _apply_to_image(pattern: np.ndarray, width: int, height: int, tile_size: int
     
     return img
 
-def _apply_color_to_image(pattern: np.ndarray, width: int, height: int, tile_size: int) -> Image.Image:
+def _apply_pattern_color_to_image(pattern: np.ndarray, width: int, height: int, tile_size: int) -> Image.Image:
     """Apply pattern to image using colors"""
     return _apply_to_image(pattern, width, height, tile_size, draw_tile_color)
 
-def _apply_texture_to_image(pattern: np.ndarray, width: int, height: int, tile_size: int) -> Image.Image:
+def _apply_pattern_texture_to_image(pattern: np.ndarray, width: int, height: int, tile_size: int) -> Image.Image:
     """Apply pattern to image using textures"""
     return _apply_to_image(pattern, width, height, tile_size, draw_tile_texture)
 
-def apply_algorithm(width: int, height: int, tile_size: int, algorithm_type: AlgorithmType, **kwargs) -> Image.Image:
+def _apply_algorithm(width: int, height: int, tile_size: int, algorithm_type: AlgorithmType, **kwargs) -> Image.Image:
     """Generate pattern based on algorithm"""
     
     if algorithm_type == AlgorithmType.SINEWAVE:
@@ -71,7 +71,7 @@ def apply_algorithm(width: int, height: int, tile_size: int, algorithm_type: Alg
         tile_size_y = height // segments_y
         tile_size = min(tile_size_x, tile_size_y)
         
-        return _apply_texture_to_image(pattern, width, height, tile_size)
+        return _apply_pattern_texture_to_image(pattern, width, height, tile_size)
         
     pattern_funcs = {
         AlgorithmType.FIBONACCI: generate_fibonacci_spiral,
@@ -83,7 +83,7 @@ def apply_algorithm(width: int, height: int, tile_size: int, algorithm_type: Alg
     
     if algorithm_type in pattern_funcs:
         pattern = pattern_funcs[algorithm_type](width, height)
-        return _apply_color_to_image(pattern, width, height, tile_size)
+        return _apply_pattern_color_to_image(pattern, width, height, tile_size)
     
     raise ValueError(f"Unknown algorithm type: {algorithm_type}")
 
@@ -91,8 +91,8 @@ def generate_pattern(width: int, height: int, algorithm_type: AlgorithmType, til
     """Generate pattern"""
     os.makedirs('./output', exist_ok=True)
     
-    img = apply_algorithm(width, height, tile_size, algorithm_type, **kwargs)
-    filename = generate_filename()
+    img = _apply_algorithm(width, height, tile_size, algorithm_type, **kwargs)
+    filename = _generate_filename()
     img.save(filename)
     
     return img, filename

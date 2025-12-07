@@ -9,7 +9,7 @@ def generate_fibonacci_spiral(width, height, scale=None):
     if scale is None:
         scale = min(width, height) / 20
     
-    def plot_point(x, y):
+    def _plot_point(x, y):
         if 0 <= x < width and 0 <= y < height:
             pattern[int(y), int(x)] = 1
 
@@ -18,6 +18,6 @@ def generate_fibonacci_spiral(width, height, scale=None):
         r = scale * phi ** (t/2)
         x = width/2 + r * np.cos(t)
         y = height/2 + r * np.sin(t)
-        plot_point(x, y)
+        _plot_point(x, y)
     
     return pattern

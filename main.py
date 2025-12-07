@@ -7,7 +7,7 @@ import itertools
 import threading
 import os
 
-def create_spinner(start_time) -> Tuple[Callable, Callable]:
+def _create_spinner(start_time) -> Tuple[Callable, Callable]:
     """Create a spinner to show progress in terminal"""
     state = {'running': False, 'start_time': start_time}
     spinner = itertools.cycle(['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'])
@@ -31,7 +31,7 @@ def create_spinner(start_time) -> Tuple[Callable, Callable]:
         
     return start_spinner, stop_spinner
 
-def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType, dict]]:
+def _parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType, dict]]:
     """Pure function to parse command line arguments"""
     if len(args) < 3:
         return None
@@ -51,7 +51,7 @@ def parse_arguments(args: list) -> Optional[Tuple[int, int, AlgorithmType, dict]
         return None
 
 def main() -> None:
-    result = parse_arguments(sys.argv)
+    result = _parse_arguments(sys.argv)
             
     print(f"Arguments: {result}")
     
@@ -65,7 +65,7 @@ def main() -> None:
     
     try:
         start_time = time.time()
-        start_spinner, stop_spinner = create_spinner(start_time)
+        start_spinner, stop_spinner = _create_spinner(start_time)
         start_spinner()
         _, filename = generate_pattern(width, height, pattern_type, **kwargs)
         
