@@ -6,7 +6,8 @@ import os
 import uuid
 import random
 import numpy as np
-from tiles import draw_tile_color, AlgorithmType, draw_tile_texture
+from tiles import draw_tile_color, draw_tile_texture
+from algorithms import AlgorithmType
 from algorithms.sine_wave import generate_sine_wave
 from algorithms.fibonacci_spiral import generate_fibonacci_spiral
 from algorithms.dragon_curve import generate_dragon_curve

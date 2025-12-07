@@ -1,5 +1,5 @@
 from typing import Optional, Tuple, Callable
-from tiles import AlgorithmType
+from algorithms import AlgorithmType
 from pattern_generator import generate_pattern
 import sys
 import time
