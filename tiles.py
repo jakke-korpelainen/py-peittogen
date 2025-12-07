@@ -11,6 +11,7 @@ class TileType(Enum):
     C = "tile_c"
     D = "tile_d"
     E = "tile_e"
+    F = "tile_f"
 
 DEFAULT_TILE_SIZE = 32
 
@@ -21,6 +22,7 @@ TILE_COLORS: dict[TileType, Tuple[int, int, int]] = {
     TileType.C: (0, 0, 255),     # Blue
     TileType.D: (255, 255, 0),   # Yellow
     TileType.E: (255, 0, 255),   # Magenta
+    TileType.F: (0, 255, 255),   # Cyan
 }
 
 def _get_tile_texture_path(tile_type: TileType) -> str:
