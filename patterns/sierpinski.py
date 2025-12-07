@@ -1,9 +1,11 @@
 import numpy as np
 
 def generate_sierpinski(width, height, depth=8):
+    """Generate a Sierpinski triangle pattern"""
     pattern = np.zeros((height, width))
     
     def draw_triangle(x1, y1, x2, y2, x3, y3, depth):
+        """Draw a triangle with given vertices"""
         if depth == 0:
             for x, y in [(x1,y1), (x2,y2), (x3,y3)]:
                 if 0 <= x < width and 0 <= y < height:

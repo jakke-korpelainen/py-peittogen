@@ -45,8 +45,6 @@ def get_valid_tile_types(img: Image.Image, x: int, y: int, tile_size: int, tile_
         if create_tile(t_type, tile_size).getpixel((tile_size // 2, tile_size // 2)) not in invalid_colors
     ]
 
-
-
 def apply_pattern_to_image(pattern: np.ndarray, width: int, height: int, tile_size: int) -> Image.Image:
     """Apply pattern to image"""
     img = Image.new('RGB', (width, height))

@@ -2,6 +2,7 @@ import numpy as np
 from scipy.spatial import Voronoi
 
 def generate_voronoi(width, height, points_count=None):
+    """Generate a Voronoi pattern"""
     if points_count is None:
         points_count = int((width * height) ** 0.5 / 10)  # Adaptive point count
     
